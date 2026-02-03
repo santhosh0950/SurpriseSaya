@@ -28,6 +28,16 @@ header h1{
 header p{margin-top:10px;opacity:.9;}
 .heart{font-size:2.2rem;animation:heartbeat 1.4s infinite;}
 
+/* GLOW */
+.glow{
+    text-shadow:0 0 12px #fff,0 0 25px #ffb6c1;
+    animation:glowPulse 2.5s infinite;
+}
+@keyframes glowPulse{
+    0%,100%{text-shadow:0 0 12px #fff;}
+    50%{text-shadow:0 0 30px #ffb6c1;}
+}
+
 /* SECTION */
 section{padding:50px 20px;}
 
@@ -112,6 +122,11 @@ section{padding:50px 20px;}
     font-size:1.2rem;
     line-height:1.8;
 }
+.hint{
+    font-size:.9rem;
+    margin-top:10px;
+    opacity:.85;
+}
 
 /* FOOTER */
 footer{padding:30px;font-size:.9rem;opacity:.9;}
@@ -120,7 +135,25 @@ footer{padding:30px;font-size:.9rem;opacity:.9;}
 .floating-heart{
     position:fixed;
     bottom:-20px;
-    animation:floatUp linear infinite;
+    animation:floatUp linear forwards;
+}
+
+/* NIGHT MODE */
+body.night{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+body.night .card{
+    background:rgba(255,255,255,.12);
+}
+.toggle{
+    position:fixed;
+    top:15px;
+    right:15px;
+    padding:10px 16px;
+    border-radius:20px;
+    border:none;
+    cursor:pointer;
+    font-size:.85rem;
 }
 
 /* ANIMATIONS */
@@ -144,8 +177,10 @@ footer{padding:30px;font-size:.9rem;opacity:.9;}
 
 <body>
 
+<button class="toggle" onclick="toggleNight()">🌙 Night</button>
+
 <header>
-    <h1>For You Saya 💙</h1>
+    <h1 class="glow">For You Saya 💙</h1>
     <p>Forever began on <strong>14 • 02 • 2025</strong></p>
     <div class="heart">🤍</div>
 </header>
@@ -155,7 +190,7 @@ footer{padding:30px;font-size:.9rem;opacity:.9;}
 <div class="card reveal">
     <h2>Our Love</h2>
     <p class="love-text">
-        You are my peace, my smile, my safe place.  
+        You are my peace, my smile, my safe place.<br>
         Every heartbeat whispers your name.
     </p>
 </div>
@@ -185,7 +220,6 @@ footer{padding:30px;font-size:.9rem;opacity:.9;}
     </div>
 </div>
 
-<!-- SECRET MESSAGE -->
 <div class="card reveal">
     <h2>Secret Message 🔒</h2>
     <p class="love-text">Only you know the password 💭</p>
@@ -194,21 +228,21 @@ footer{padding:30px;font-size:.9rem;opacity:.9;}
         <input type="password" id="password" placeholder="Enter password">
         <br>
         <button class="btn" onclick="checkPassword()">Unlock 💖</button>
+        <div class="hint">Hint: Our special date 💞</div>
     </div>
 
     <div class="secret-message" id="secretMessage">
-        💌 My love,  
-        this password holds our memories,  
-        our dates, our forever.  
-        No matter what happens,  
-        **I choose you — always.** ♾️❤️
+        💌 My love,<br>
+        this password holds our memories,<br>
+        our dates, our forever.<br><br>
+        <strong>I choose you — always.</strong> ♾️❤️
     </div>
 </div>
 
 <div class="card reveal">
     <h2>A Promise 💍</h2>
     <p class="love-text">
-        No matter where life takes us,  
+        No matter where life takes us,<br>
         my heart will always find you.
     </p>
     <button class="btn" onclick="surprise()">Tap Here ❤️</button>
@@ -240,29 +274,33 @@ function updateCountup(){
 setInterval(updateCountup,1000);
 updateCountup();
 
-// FLOAT HEARTS
+// FLOAT HEARTS (NO LAG)
+let heartCount=0;
+const maxHearts=18;
 setInterval(()=>{
+    if(heartCount>=maxHearts)return;
     const h=document.createElement("div");
     h.className="floating-heart";
-    h.innerHTML="❤️";
+    h.innerHTML=Math.random()>0.5?"❤️":"🤍";
     h.style.left=Math.random()*100+"vw";
-    h.style.fontSize=Math.random()*20+15+"px";
-    h.style.animationDuration=Math.random()*4+6+"s";
+    h.style.fontSize=Math.random()*14+16+"px";
+    h.style.animationDuration=Math.random()*3+7+"s";
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),10000);
-},600);
+    heartCount++;
+    setTimeout(()=>{h.remove();heartCount--;},10000);
+},1200);
 
 // SCROLL REVEAL
 const cards=document.querySelectorAll(".reveal");
 window.addEventListener("scroll",()=>{
     cards.forEach(c=>{
-        if(c.getBoundingClientRect().top < window.innerHeight-100){
+        if(c.getBoundingClientRect().top<window.innerHeight-100){
             c.classList.add("show");
         }
     });
 });
 
-// SECRET PASSWORD
+// SECRET
 function checkPassword(){
     const pass=document.getElementById("password").value;
     if(pass==="081424"){
@@ -277,6 +315,11 @@ function checkPassword(){
 function surprise(){
     alert("I choose you. Today, tomorrow, forever 💖");
     document.getElementById("bgMusic").play();
+}
+
+// NIGHT MODE
+function toggleNight(){
+    document.body.classList.toggle("night");
 }
 </script>
 
